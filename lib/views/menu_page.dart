@@ -15,6 +15,7 @@ class MenuPage extends BaseView {
         padding: EdgeInsets.symmetric(horizontal: Get.width * 0.025),
         child: Center (
           child: Column (
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget> [
               Image.asset (

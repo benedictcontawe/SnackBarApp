@@ -13,10 +13,10 @@ class QuizPage extends BaseView<QuizController> {
     return Scaffold (
       body: Container (
           decoration: getDecoration(),
-          padding: EdgeInsets.symmetric(horizontal: Get.width * 0.025),
+          padding: EdgeInsets.symmetric(horizontal: Get.width * 0.05),
           child: Column (
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
              Obx(() => 
               Text(
