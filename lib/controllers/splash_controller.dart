@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'package:getx_storage/controllers/base_controller.dart';
-import 'package:getx_storage/routes/app_pages.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:getx_quiz/controllers/base_controller.dart';
+import 'package:getx_quiz/routes/app_pages.dart';
 
 class SplashController extends BaseController {
 
@@ -25,13 +25,13 @@ class SplashController extends BaseController {
     debugPrint("SplashController startTimer");
     _timer = Timer (
       const Duration( milliseconds: 4000 ), 
-      (() => _launchLogin())
+      (() => _launchMenu())
     );
   }
 
-  void _launchLogin() {
+  void _launchMenu() {
       debugPrint("SplashController Timer Stops");
-      Get.offAndToNamed(Routes.LOGIN);
+      Get.offAndToNamed(Routes.MENU);
       _timer.cancel();
   }
 
