@@ -9,5 +9,9 @@ class QuizModel {
 
   final String question;
   final List<ChoiceModel> choices;
-  List<int>? selectedChoice;
+
+  @override
+  String toString() {
+    return "QuizModel question-$question choices-${choices.join(', ')}" ?? super.toString();
+  }
 }
