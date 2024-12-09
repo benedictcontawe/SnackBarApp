@@ -11,15 +11,14 @@ class QuizPage extends BaseView<QuizController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold (
-      body: Container (
+      body: Obx(() => controller.isLoading().isTrue ? getLoadWidget() : Container (
           decoration: getDecoration(),
           padding: EdgeInsets.symmetric(horizontal: Get.width * 0.05),
           child: Column (
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-             Obx(() => 
-              Text(
+              Text (
                 controller.observeQuestion(),
                 style: GoogleFonts.lato (
                   color: const Color.fromARGB(255, 201, 153, 251),
@@ -27,17 +26,19 @@ class QuizPage extends BaseView<QuizController> {
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
-              )
-            ),
-            ...controller.observeChoices().map((choice) {
-              return ChoiceButton (
-                text: choice.answer,
-                onTap: () => controller.onSelectChoice(choice),
-              );
-            }),
+              ),
+              ...controller.observeChoices().map((choice) {
+                return Container(
+                  padding: EdgeInsets.only(top: Get.height * 0.025),
+                  child: ChoiceButton (
+                    text: choice.answer,
+                    onTap: () => controller.onSelectChoice(choice),
+                  ),
+                );
+              }),
             ],
           ),
-        ),
+        )),
     );
   }
 }

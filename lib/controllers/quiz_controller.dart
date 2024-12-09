@@ -6,7 +6,9 @@ import 'package:getx_quiz/models/quiz_model.dart';
 
 class QuizController extends BaseController {
 
+  final RxBool _isLoading = false.obs;
   final RxList<QuizModel> _quizList = new List<QuizModel>.empty().obs;
+  final RxList<ChoiceModel> _choices = new List<ChoiceModel>.empty().obs;
   final RxInt _index = 0.obs;
 
   @override
@@ -17,22 +19,23 @@ class QuizController extends BaseController {
   }
 
   void _initializeQuizList() {
+    debugPrint("QuizController _initializeQuizList");
     final ChoiceModel rightChoice = new ChoiceModel(image: null, answer: "right answer", isCorrect: true);
     final ChoiceModel wrongChoice = new ChoiceModel(image: null, answer: "wrong answer", isCorrect: false);
-    final List<ChoiceModel> choices = [rightChoice, wrongChoice, wrongChoice];
-    choices.shuffle();
+    List<ChoiceModel> choices = [rightChoice, wrongChoice, wrongChoice];
     _quizList.add(new QuizModel("question 0", choices,));
-    choices.shuffle();
+    choices = [wrongChoice, wrongChoice, rightChoice];
     _quizList.add(new QuizModel("question 1", choices));
-    choices.shuffle();
+    choices = [wrongChoice, rightChoice, wrongChoice];
     _quizList.add(new QuizModel("question 2", choices));
-    choices.shuffle();
+    choices = [rightChoice, wrongChoice, wrongChoice];
     _quizList.add(new QuizModel("question 3", choices));
   }
 
   @override
   void onReady() {
     debugPrint("QuizController onReady");
+    _choices(_quizList[_index.value].choices);
     super.onReady();
   }
 
@@ -44,18 +47,31 @@ class QuizController extends BaseController {
     return _quizList[_index.value].question;
   }
 
-  List<ChoiceModel> observeChoices() {
-    return _quizList[_index.value].choices;
+  RxList<ChoiceModel> observeChoices() {
+    return _choices;
   }
 
-  void onSelectChoice(ChoiceModel selectedChoice) {
-    _quizList[_index.value].choices.forEach((choice) {
-      if (choice.isEqual(selectedChoice)) {
-        choice.isSelected = true;
-      }
-    });
-    debugPrint("onSelectChoice $selectedChoice ${_quizList[_index.value]}");
-    //TODO: Increament _index
+  void onSelectChoice(ChoiceModel selectedChoice) async{
+    try {
+      _isLoading(true);
+      _quizList[_index.value].choices.forEach((choice) {
+        if (choice.isEqual(selectedChoice)) {
+          choice.isSelected = true;
+        }
+      });
+      debugPrint("onSelectChoice $selectedChoice ${_quizList[_index.value]}");
+      await Future.delayed(const Duration(milliseconds: 500));
+      _index.value++;
+      _choices(_quizList[_index.value].choices);
+    } catch(exception) {
+
+    } finally {
+      _isLoading(false);
+    }
+  }
+
+  RxBool isLoading() {
+    return _isLoading;
   }
 
   @override
