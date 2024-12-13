@@ -7,10 +7,12 @@ class ChoiceButton extends BaseWidget {
     super.key,
     required this.text,
     required this.onTap,
+    this.isCorrect, this.isSelected
   } );
     
   final String? text;
   final void Function() onTap;
+  final bool? isCorrect, isSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class ChoiceButton extends BaseWidget {
           vertical: Get.height * 0.025,
           horizontal: Get.width * 0.05,
         ),
-        backgroundColor: const Color.fromARGB(255, 33, 1, 95),
+        backgroundColor: _getBackgroundColor(),
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(40),
@@ -32,5 +34,18 @@ class ChoiceButton extends BaseWidget {
         textAlign: TextAlign.center,
       ),
     );
+  }
+
+  Color? _getBackgroundColor() {
+    return Color.fromARGB(255, 33, 1, 95);
+    /* TOTO: On going
+    if (isSelected == null || isSelected == false) {
+      return Color.fromARGB(255, 33, 1, 95);
+    } else if(isCorrect == true) {
+      return Colors.green;
+    } else if (isCorrect == false) {
+      return Colors.red;
+    }
+    */
   }
 }

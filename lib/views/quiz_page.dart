@@ -33,6 +33,7 @@ class QuizPage extends BaseView<QuizController> {
                   child: ChoiceButton (
                     text: choice.answer,
                     onTap: () => controller.onSelectChoice(choice),
+                    isCorrect: choice.isCorrect, isSelected: choice.isSelected,
                   ),
                 );
               }),

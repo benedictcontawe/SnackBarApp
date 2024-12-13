@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:getx_quiz/controllers/base_controller.dart';
 import 'package:getx_quiz/models/choice_model.dart';
 import 'package:getx_quiz/models/quiz_model.dart';
+import 'package:getx_quiz/routes/app_pages.dart';
 
 class QuizController extends BaseController {
 
@@ -22,14 +23,13 @@ class QuizController extends BaseController {
     debugPrint("QuizController _initializeQuizList");
     final ChoiceModel rightChoice = new ChoiceModel(image: null, answer: "right answer", isCorrect: true);
     final ChoiceModel wrongChoice = new ChoiceModel(image: null, answer: "wrong answer", isCorrect: false);
-    List<ChoiceModel> choices = [rightChoice, wrongChoice, wrongChoice];
-    _quizList.add(new QuizModel("question 0", choices,));
-    choices = [wrongChoice, wrongChoice, rightChoice];
-    _quizList.add(new QuizModel("question 1", choices));
-    choices = [wrongChoice, rightChoice, wrongChoice];
-    _quizList.add(new QuizModel("question 2", choices));
-    choices = [rightChoice, wrongChoice, wrongChoice];
-    _quizList.add(new QuizModel("question 3", choices));
+    final ChoiceModel trueChoice = new ChoiceModel(image: null, answer: "True", isCorrect: false);
+    final ChoiceModel falseChoice = new ChoiceModel(image: null, answer: "False", isCorrect: false);
+    _quizList.add(new QuizModel("question 0", [rightChoice, wrongChoice, wrongChoice],));
+    _quizList.add(new QuizModel("question 1", [wrongChoice, rightChoice, wrongChoice]));
+    _quizList.add(new QuizModel("question 2", [wrongChoice, wrongChoice, rightChoice]));
+    _quizList.add(new QuizModel("question 3", [wrongChoice, rightChoice, wrongChoice]));
+    _quizList.add(new QuizModel("question 4", [trueChoice, falseChoice]));
   }
 
   @override
@@ -55,11 +55,15 @@ class QuizController extends BaseController {
     try {
       _isLoading(true);
       _quizList[_index.value].choices.forEach((choice) {
-        if (choice.isEqual(selectedChoice)) {
-          choice.isSelected = true;
-        }
+        choice.isSelected = choice.isEqual(selectedChoice);
       });
+      await Future.delayed(const Duration(milliseconds: 500));
+      _isLoading(false);
+      await Future.delayed(const Duration(milliseconds: 500));
+      //TODO: Add animation when right ChoiceButton is green when wrong ChoiceButton is red
       debugPrint("onSelectChoice $selectedChoice ${_quizList[_index.value]}");
+      //TODO: if all answered go to Routes.RESULTS then display the scores 
+      _isLoading(true);
       await Future.delayed(const Duration(milliseconds: 500));
       _index.value++;
       _choices(_quizList[_index.value].choices);

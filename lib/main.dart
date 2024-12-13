@@ -24,6 +24,7 @@ Future<void> main() async {
       initialBinding: SplashBinding(),
       initialRoute: Routes.SPLASH,
       theme: ThemeData (
+        useMaterial3: true,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       defaultTransition: Transition.fade,
