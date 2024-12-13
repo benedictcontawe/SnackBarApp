@@ -20,6 +20,7 @@ class ObjectController extends BaseController {
   @override
   void onInit() {
     super.onInit();
+    debugPrint("ObjectController onInit");
     fetchModels();
   }
 
@@ -56,6 +57,10 @@ class ObjectController extends BaseController {
   */
   String getName(int index) {
     return _list.value[index]?.name ?? "Nil";
+  }
+
+  CustomModel getCell(int index) {
+    return _list.value[index];
   }
 
   Future<void> fetchModels() async {
@@ -127,6 +132,7 @@ class ObjectController extends BaseController {
 
   @override
   void onClose() {
+    debugPrint("ObjectController onClose");
     super.onClose();
   }
 }

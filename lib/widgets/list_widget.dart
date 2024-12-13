@@ -15,8 +15,12 @@ class ListWidget extends BaseWidget<ObjectController> {
     return Obx( () {
       return ListView.builder (
         itemCount: controller.getLength(),
-        itemBuilder: (BuildContext context, int index) {
-          return Card(
+        itemBuilder: (BuildContext context, int index) => Dismissible (
+          key: ValueKey(controller.getCell(index)),
+          onDismissed: (direction) {
+            controller.deleteModel(index);
+          },
+          child: Card (
             child: Column(
               children: [
                 ListTile(
@@ -32,9 +36,7 @@ class ListWidget extends BaseWidget<ObjectController> {
                           controller.setController(index);
                           CustomDialog.editDialog(
                             controller.getController(),
-                            () {
-                              controller.updateName(index);
-                            },
+                            () => controller.updateName(index),
                           );
                         },
                       ),
@@ -42,9 +44,7 @@ class ListWidget extends BaseWidget<ObjectController> {
                     Flexible (
                         child: ButtonWidget (
                         text: "Delete", 
-                        onPressed: () {
-                          controller.deleteModel(index);
-                        },
+                        onPressed: () => controller.deleteModel(index),
                       ),
                     )
                   ]
@@ -52,8 +52,8 @@ class ListWidget extends BaseWidget<ObjectController> {
               )
               ],
             ),
-          );
-        }
+          )
+        ),
       );   
     }, );
   }
