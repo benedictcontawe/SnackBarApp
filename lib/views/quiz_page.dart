@@ -6,6 +6,7 @@ import 'package:getx_quiz/widgets/choice_button.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class QuizPage extends BaseView<QuizController> {
+  
   const QuizPage({super.key});
 
   @override

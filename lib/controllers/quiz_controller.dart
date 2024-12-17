@@ -58,15 +58,19 @@ class QuizController extends BaseController {
         choice.isSelected = choice.isEqual(selectedChoice);
       });
       await Future.delayed(const Duration(milliseconds: 500));
-      _isLoading(false);
+      //_isLoading(false);
       await Future.delayed(const Duration(milliseconds: 500));
       //TODO: Add animation when right ChoiceButton is green when wrong ChoiceButton is red
       debugPrint("onSelectChoice $selectedChoice ${_quizList[_index.value]}");
       //TODO: if all answered go to Routes.RESULTS then display the scores 
-      _isLoading(true);
+      //_isLoading(true);
       await Future.delayed(const Duration(milliseconds: 500));
-      _index.value++;
-      _choices(_quizList[_index.value].choices);
+      if (_index.value < _quizList.length - 1) {
+        _index.value++;
+        _choices(_quizList[_index.value].choices);
+      } else {
+        _onLaunchResults();
+      }
     } catch(exception) {
 
     } finally {
@@ -76,6 +80,10 @@ class QuizController extends BaseController {
 
   RxBool isLoading() {
     return _isLoading;
+  }
+
+  void _onLaunchResults() {
+    Get.offNamed(Routes.RESULTS);
   }
 
   @override

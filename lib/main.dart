@@ -23,11 +23,24 @@ Future<void> main() async {
       debugShowCheckedModeBanner: true,
       initialBinding: SplashBinding(),
       initialRoute: Routes.SPLASH,
+      darkTheme: ThemeData.dark().copyWith(),
+      defaultTransition: Transition.fade,
       theme: ThemeData (
         useMaterial3: true,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+      ).copyWith(
+        appBarTheme: AppBarTheme().copyWith(
+          
+        ),
+        cardTheme: CardTheme().copyWith(
+
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: null
+        ),
+        textTheme: ThemeData().textTheme.copyWith()
       ),
-      defaultTransition: Transition.fade,
+      themeMode: ThemeMode.system,
       getPages: AppPages.pages,
     ) 
   );

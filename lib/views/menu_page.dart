@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:getx_quiz/routes/app_pages.dart';
 
 class MenuPage extends BaseView {
+  
   const MenuPage({super.key});
 
   @override
