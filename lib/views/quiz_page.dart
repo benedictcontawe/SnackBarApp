@@ -12,7 +12,7 @@ class QuizPage extends BaseView<QuizController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold (
-      body: Obx(() => controller.isLoading().isTrue ? getLoadWidget() : Container (
+      body: Obx(() => controller.isLoading.value == true ? getLoadWidget() : Container (
           decoration: getDecoration(),
           padding: EdgeInsets.symmetric(horizontal: Get.width * 0.05),
           child: Column (
@@ -20,7 +20,7 @@ class QuizPage extends BaseView<QuizController> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text (
-                controller.observeQuestion(),
+                controller.question,
                 style: GoogleFonts.lato (
                   color: const Color.fromARGB(255, 201, 153, 251),
                   fontSize: 24,
@@ -28,16 +28,32 @@ class QuizPage extends BaseView<QuizController> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              ...controller.observeChoices().map((choice) {
+              /*
+              ...controller.choices.map((choice,) {
                 return Container(
                   padding: EdgeInsets.only(top: Get.height * 0.025),
                   child: ChoiceButton (
                     text: choice.answer,
-                    onTap: () => controller.onSelectChoice(choice),
-                    isCorrect: choice.isCorrect, isSelected: choice.isSelected,
+                    onTap: () => controller.onSelectChoice(choice,),
+                    backgroundColor: choice.backgroundColour,
                   ),
                 );
               }),
+              */
+              ListView.builder (
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Container (
+                    padding: EdgeInsets.only(top: Get.height * 0.025),
+                    child: ChoiceButton (
+                      text: controller.choices[index].answer,
+                      onTap: () => controller.onSelectChoice(controller.choices[index], index),
+                      backgroundColor: controller.choices[index].backgroundColour,
+                    )
+                  );
+                },
+                itemCount: controller.choices.length,
+              )
             ],
           ),
         )),

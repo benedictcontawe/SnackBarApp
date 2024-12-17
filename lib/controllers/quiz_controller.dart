@@ -7,10 +7,10 @@ import 'package:getx_quiz/routes/app_pages.dart';
 
 class QuizController extends BaseController {
 
-  final RxBool _isLoading = false.obs;
-  final RxList<QuizModel> _quizList = new List<QuizModel>.empty().obs;
-  final RxList<ChoiceModel> _choices = new List<ChoiceModel>.empty().obs;
-  final RxInt _index = 0.obs;
+  final RxBool isLoading = true.obs;
+  final List<QuizModel> _quizList = new List<QuizModel>.empty(growable: true);
+  final RxList<ChoiceModel> choices = new List<ChoiceModel>.empty(growable: false).obs;
+  int _index = 0;
 
   @override
   void onInit() {
@@ -23,63 +23,99 @@ class QuizController extends BaseController {
     debugPrint("QuizController _initializeQuizList");
     final ChoiceModel rightChoice = new ChoiceModel(image: null, answer: "right answer", isCorrect: true);
     final ChoiceModel wrongChoice = new ChoiceModel(image: null, answer: "wrong answer", isCorrect: false);
-    final ChoiceModel trueChoice = new ChoiceModel(image: null, answer: "True", isCorrect: false);
+    final ChoiceModel trueChoice = new ChoiceModel(image: null, answer: "True", isCorrect: true);
     final ChoiceModel falseChoice = new ChoiceModel(image: null, answer: "False", isCorrect: false);
-    _quizList.add(new QuizModel("question 0", [rightChoice, wrongChoice, wrongChoice],));
-    _quizList.add(new QuizModel("question 1", [wrongChoice, rightChoice, wrongChoice]));
-    _quizList.add(new QuizModel("question 2", [wrongChoice, wrongChoice, rightChoice]));
-    _quizList.add(new QuizModel("question 3", [wrongChoice, rightChoice, wrongChoice]));
-    _quizList.add(new QuizModel("question 4", [trueChoice, falseChoice]));
+    _quizList.clear();
+    _quizList.add(new QuizModel("question 0", [
+      ChoiceModel(image: null, answer: "right answer", isCorrect: true), 
+      ChoiceModel(image: null, answer: "wrong answer", isCorrect: false), 
+      ChoiceModel(image: null, answer: "wrong answer", isCorrect: false)
+    ],));
+    _quizList.add(new QuizModel("question 1", [
+      wrongChoice, 
+      rightChoice, 
+      wrongChoice,
+    ]));
+    _quizList.add(new QuizModel("question 2", [
+      wrongChoice, 
+      wrongChoice, 
+      rightChoice,
+    ]));
+    _quizList.add(new QuizModel("question 3", [
+      wrongChoice, 
+      rightChoice, 
+      wrongChoice,
+    ]));
+    _quizList.add(new QuizModel("question 4", [
+      trueChoice, 
+      falseChoice,
+    ]));
   }
 
   @override
   void onReady() {
     debugPrint("QuizController onReady");
-    _choices(_quizList[_index.value].choices);
+    choices(_quizList[_index].choices);
     super.onReady();
+    isLoading(false);
   }
 
-  RxInt observeQuizIndex() {
-    return _index;
+  String get question {
+  if (_index >= 0 && _index < _quizList.length) {
+    return _quizList[_index].question;
+  } else {
+    return '';
   }
+}
 
-  String observeQuestion() {
-    return _quizList[_index.value].question;
-  }
-
-  RxList<ChoiceModel> observeChoices() {
-    return _choices;
-  }
-
-  void onSelectChoice(ChoiceModel selectedChoice) async{
+  void onSelectChoice(ChoiceModel selectedChoice, int selectedChoiceIndex) async{
     try {
-      _isLoading(true);
-      _quizList[_index.value].choices.forEach((choice) {
-        choice.isSelected = choice.isEqual(selectedChoice);
-      });
-      await Future.delayed(const Duration(milliseconds: 500));
-      //_isLoading(false);
-      await Future.delayed(const Duration(milliseconds: 500));
+      debugPrint("onSelectChoice $selectedChoice try ${_index} $selectedChoiceIndex");
+      isLoading(true);
+      _quizList[_index].choices[selectedChoiceIndex].isSelected = true;
+      /*
+      for (int index = 0; index < _quizList[_index].choices.length; index++) {
+        if (index == selectedChoiceIndex) {
+          _quizList[_index].choices[index].isSelected = true;
+          choices[index].isSelected = true;
+        } else if (index != selectedChoiceIndex) {
+          _quizList[_index].choices[index].isSelected = false;
+          choices[index].isSelected = false;
+        }
+        debugPrint("onSelectChoice for loop $index ${_quizList[_index].choices[index]}");
+      }
+      */
+      await Future.delayed(const Duration(milliseconds: 1000));
+      //choices.clear();
+      //choices();
+      //choices.refresh();
+      await Future.delayed(const Duration(milliseconds: 250));
+      isLoading(false);
+      await Future.delayed(const Duration(milliseconds: 10000));
       //TODO: Add animation when right ChoiceButton is green when wrong ChoiceButton is red
-      debugPrint("onSelectChoice $selectedChoice ${_quizList[_index.value]}");
+      debugPrint("onSelectChoice $selectedChoice ${_quizList[_index]}");
       //TODO: if all answered go to Routes.RESULTS then display the scores 
-      //_isLoading(true);
+      isLoading(true);
       await Future.delayed(const Duration(milliseconds: 500));
-      if (_index.value < _quizList.length - 1) {
-        _index.value++;
-        _choices(_quizList[_index.value].choices);
+      if (_index < _quizList.length - 1) {
+        _onNextQuestion();
       } else {
         _onLaunchResults();
       }
     } catch(exception) {
-
+      debugPrint("onSelectChoice catch exception $exception");
     } finally {
-      _isLoading(false);
+      debugPrint("onSelectChoice finally");
+      isLoading(false);
     }
   }
 
-  RxBool isLoading() {
-    return _isLoading;
+  void _onNextQuestion() {
+    _index++;
+    _quizList[_index].choices.forEach((choice) {
+      choice.isSelected = false;
+    });
+    choices(_quizList[_index].choices);
   }
 
   void _onLaunchResults() {
@@ -89,7 +125,7 @@ class QuizController extends BaseController {
   @override
   void onClose() {
     debugPrint("QuizController onClose");
-    _quizList.close();
+    _quizList.clear();
     super.onClose();
   }
 }
